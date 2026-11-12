@@ -12,15 +12,20 @@ namespace Animal_Spa.Components.Receptionist
 {
     public partial class AddPetView : UserControl
     {
+        // Phát thông báo khi hủy thêm thú cưng, Action nhận phương thức void không tham số.
         public event Action? CancelRequested;
 
+        // Lưu mã khách hàng sở hữu thú cưng đang được thêm.
         public int? CurrentCustomerId { get; private set; }
+        // Lưu đường dẫn ảnh thú cưng mà người dùng đã chọn.
         private string? _selectedPhotoPath;
 
+        // Khởi tạo giao diện và tải ảnh mặc định khi chạy ứng dụng.
         public AddPetView()
         {
             InitializeComponent();
 
+            // Bỏ qua việc tải ảnh khi giao diện đang mở trong trình thiết kế.
             if (DesignerProperties.GetIsInDesignMode(this))
             {
                 return;
@@ -29,12 +34,14 @@ namespace Animal_Spa.Components.Receptionist
             LoadDefaultUploadFrame();
         }
 
+        // Chuẩn bị form trống và giữ mã khách hàng được truyền vào.
         public void PrepareForCustomer(int customerId)
         {
             CurrentCustomerId = customerId;
             ClearForm(keepCustomer: true);
         }
 
+        // Tải ảnh mặc định cho vùng chọn ảnh thú cưng.
         private void LoadDefaultUploadFrame()
         {
             try
@@ -43,6 +50,7 @@ namespace Animal_Spa.Components.Receptionist
                     "pack://application:,,,/Animal-Spa;component/Asset/FRAME-UPLOAD.jpg",
                     UriKind.Absolute);
 
+                // BitmapImage đại diện cho hình ảnh lấy từ URI tài nguyên của ứng dụng.
                 var bitmap = new BitmapImage();
                 bitmap.BeginInit();
                 bitmap.UriSource = uri;
@@ -59,8 +67,10 @@ namespace Animal_Spa.Components.Receptionist
             }
         }
 
+        // Khi người dùng nhấp vào vùng ảnh, mở cửa sổ chọn ảnh từ máy tính.
         private void UploadPhotoArea_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
+            // OpenFileDialog cho phép duyệt và chọn một file ảnh có sẵn.
             var dialog = new OpenFileDialog
             {
                 Title = "Choose pet photo",
@@ -86,6 +96,7 @@ namespace Animal_Spa.Components.Receptionist
             }
         }
 
+        // Đọc toàn bộ ảnh vào bộ nhớ và đóng file sau khi đọc xong.
         private static BitmapImage LoadBitmapWithoutLockingFile(string path)
         {
             using var stream = File.OpenRead(path);
@@ -100,6 +111,7 @@ namespace Animal_Spa.Components.Receptionist
             return bitmap;
         }
 
+        // Hiển thị ảnh lên UploadRectangle bằng ImageBrush và ẩn nội dung thay thế.
         private void SetUploadImage(ImageSource imageSource)
         {
             UploadRectangle.Fill = new ImageBrush(imageSource)
@@ -112,6 +124,7 @@ namespace Animal_Spa.Components.Receptionist
             UploadFallback.Visibility = Visibility.Collapsed;
         }
 
+        // Hiển thị trạng thái form và mã khách hàng nếu có khi nhấn Save.
         private void Save_Click(object sender, RoutedEventArgs e)
         {
             StatusText.Text = CurrentCustomerId is int customerId
@@ -119,12 +132,14 @@ namespace Animal_Spa.Components.Receptionist
                 : "UI ready — Save is not connected to pet creation yet.";
         }
 
+        // Xóa form, bỏ mã khách hàng và phát sự kiện CancelRequested khi nhấn Cancel.
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             ClearForm(keepCustomer: false);
             CancelRequested?.Invoke();
         }
 
+        // Xóa thông tin đã nhập và khôi phục ảnh mặc định, keepCustomer quyết định giữ mã khách hàng.
         public void ClearForm(bool keepCustomer = false)
         {
             PetNameTextBox.Clear();

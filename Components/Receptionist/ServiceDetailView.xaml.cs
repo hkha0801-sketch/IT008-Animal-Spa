@@ -12,6 +12,7 @@ namespace Animal_Spa.Components.Receptionist
 {
     public partial class ServiceDetailView : UserControl
     {
+        // Các Brush quy định màu nền và viền của ô giá theo trạng thái chọn.
         private readonly Brush _normalCellBackground =
             new SolidColorBrush(Color.FromRgb(168, 201, 232));
 
@@ -21,18 +22,24 @@ namespace Animal_Spa.Components.Receptionist
         private readonly Brush _selectedBorder =
             new SolidColorBrush(Color.FromRgb(57, 126, 214));
 
+        // Dictionary lưu giá theo khóa ghép từ loại thú cưng và nhóm cân nặng.
         private readonly Dictionary<string, string> _currentPrices = new();
+        // Lưu loại thú cưng, nhóm cân nặng và giá của ô đang được chọn.
         private string _selectedAnimalType = string.Empty;
         private string _selectedWeight = string.Empty;
         private string _selectedPrice = string.Empty;
 
+        // Phát thông báo đóng phần chi tiết, Action nhận phương thức void không tham số.
         public event Action? CloseRequested;
+        // Phát dịch vụ đã chọn, Action<BookingServiceItem> nhận phương thức void có tham số dịch vụ.
         public event Action<BookingServiceItem>? ServiceChosen;
 
+        // Khởi tạo giao diện, bảng giá mặc định và trạng thái chưa chọn dịch vụ.
         public ServiceDetailView()
         {
             InitializeComponent();
 
+            // Bỏ qua việc thiết lập dữ liệu và tải ảnh khi đang mở trong trình thiết kế.
             if (DesignerProperties.GetIsInDesignMode(this))
             {
                 return;
@@ -42,6 +49,7 @@ namespace Animal_Spa.Components.Receptionist
             ResetSelection();
         }
 
+        // Hiển thị thông tin dịch vụ, áp dụng bảng giá và xóa lựa chọn trước đó.
         public void LoadService(string name, string description, string duration)
         {
             ServiceNameText.Text = name;
@@ -52,6 +60,7 @@ namespace Animal_Spa.Components.Receptionist
             ResetSelection();
         }
 
+        // Chọn ô giá và cập nhật biểu tượng, cân nặng cùng giá dịch vụ trên giao diện.
         private void PriceCell_Click(object sender, RoutedEventArgs e)
         {
             if (sender is not Button button || button.Tag is not string tag)
@@ -59,6 +68,7 @@ namespace Animal_Spa.Components.Receptionist
                 return;
             }
 
+            // Tag chứa loại thú cưng và nhóm cân nặng được ngăn cách bằng ký tự |.
             string[] parts = tag.Split('|');
             if (parts.Length != 2)
             {
@@ -69,6 +79,7 @@ namespace Animal_Spa.Components.Receptionist
             string weight = parts[1];
             string key = $"{animalType}|{weight}";
 
+            // TryGetValue tìm giá theo khóa và cho biết khóa đó có trong bảng giá hay không.
             if (!_currentPrices.TryGetValue(key, out string? price))
             {
                 return;
@@ -87,6 +98,7 @@ namespace Animal_Spa.Components.Receptionist
             PriceText.Text = price;
         }
 
+        // Chọn file biểu tượng theo loại thú cưng và tải ảnh từ tài nguyên ứng dụng.
         private BitmapImage LoadAnimalIcon(string animalType)
         {
             string fileName = animalType switch
@@ -108,6 +120,7 @@ namespace Animal_Spa.Components.Receptionist
             return bitmap;
         }
 
+        // Thiết lập bảng giá tương ứng với tên dịch vụ được chọn.
         private void ApplyPricingForService(string serviceName)
         {
             switch (serviceName)
@@ -162,11 +175,13 @@ namespace Animal_Spa.Components.Receptionist
             }
         }
 
+        // Áp dụng bảng giá mặc định khi khởi tạo hoặc khi tên dịch vụ chưa có bảng giá riêng.
         private void SetDefaultPricing()
         {
             SetPricing("120.000đ", "180.000đ", "100.000đ", "150.000đ", "70.000đ", "120.000đ");
         }
 
+        // Hiển thị sáu mức giá theo loại thú cưng, nhóm cân nặng và cập nhật Dictionary tra cứu.
         private void SetPricing(
             string dogUnder,
             string dogOver,
@@ -191,6 +206,7 @@ namespace Animal_Spa.Components.Receptionist
             _currentPrices["Hamster|Over 10kg"] = hamsterOver;
         }
 
+        // Khôi phục biểu tượng mặc định, xóa dữ liệu đã chọn và bỏ đánh dấu các ô giá.
         private void ResetSelection()
         {
             try
@@ -219,6 +235,7 @@ namespace Animal_Spa.Components.Receptionist
             ResetPriceButtons();
         }
 
+        // Khôi phục màu nền và viền ban đầu cho tất cả nút trong bảng giá.
         private void ResetPriceButtons()
         {
             Button[] buttons =
@@ -238,11 +255,13 @@ namespace Animal_Spa.Components.Receptionist
             }
         }
 
+        // Phát sự kiện CloseRequested khi người dùng nhấn Cancel.
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             CloseRequested?.Invoke();
         }
 
+        // Kiểm tra lựa chọn và phát sự kiện ServiceChosen kèm thông tin dịch vụ khi nhấn Choose.
         private void Choose_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(_selectedAnimalType) ||
@@ -257,6 +276,7 @@ namespace Animal_Spa.Components.Receptionist
                 return;
             }
 
+            // Lấy các chữ số trong chuỗi giá để chuyển thành giá trị tiền dùng tính tổng.
             string digits = new string(_selectedPrice.Where(char.IsDigit).ToArray());
             decimal.TryParse(digits, out decimal priceValue);
 

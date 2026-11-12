@@ -8,16 +8,20 @@ namespace Animal_Spa.Components.Receptionist
 {
     public partial class CustomerDetailView : UserControl
     {
+        // Phát mã khách hàng khi yêu cầu thêm thú cưng, Action<int> nhận phương thức void có tham số int.
         public event Action<int>? AddPetRequested;
 
+        // Lưu mã và tên khách hàng đang được hiển thị.
         public int? CurrentCustomerId { get; private set; }
         public string CurrentCustomerName { get; private set; } = string.Empty;
 
+        // Khởi tạo các thành phần giao diện chi tiết khách hàng.
         public CustomerDetailView()
         {
             InitializeComponent();
         }
 
+        // Tải dữ liệu mẫu theo mã khách hàng và hiển thị thông tin cùng danh sách thú cưng.
         public void LoadCustomer(int customerId)
         {
             CustomerDetailItem customer = BuildMockCustomer(customerId);
@@ -29,10 +33,12 @@ namespace Animal_Spa.Components.Receptionist
             AddressText.Text = customer.Address;
             NoteText.Text = customer.Note;
 
+            // ItemsSource cung cấp danh sách thú cưng cho vùng biểu tượng và vùng chi tiết.
             CustomerPetIconsControl.ItemsSource = customer.Pets;
             PetItemsControl.ItemsSource = customer.Pets;
         }
 
+        // Tạo dữ liệu khách hàng mẫu và các thú cưng tương ứng với mã được truyền vào.
         private static CustomerDetailItem BuildMockCustomer(int customerId)
         {
             if (customerId == 3)
@@ -75,6 +81,7 @@ namespace Animal_Spa.Components.Receptionist
             };
         }
 
+        // Tạo đối tượng thú cưng và đường dẫn biểu tượng từ thông tin được truyền vào.
         private static PetDetailItem CreatePet(
             int id,
             string name,
@@ -94,6 +101,7 @@ namespace Animal_Spa.Components.Receptionist
             };
         }
 
+        // Hiển thị thông báo về chức năng sửa thông tin cho khách hàng hiện tại.
         private void EditCustomer_Click(object sender, RoutedEventArgs e)
         {
             if (CurrentCustomerId is int customerId)
@@ -106,6 +114,7 @@ namespace Animal_Spa.Components.Receptionist
             }
         }
 
+        // Phát sự kiện AddPetRequested kèm mã khách hàng hiện tại khi nhấn thêm thú cưng.
         private void AddPet_Click(object sender, RoutedEventArgs e)
         {
             if (CurrentCustomerId is int customerId)

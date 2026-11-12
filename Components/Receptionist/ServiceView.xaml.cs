@@ -6,7 +6,9 @@ namespace Animal_Spa.Components.Receptionist
 {
     public partial class ServiceView : UserControl
     {
+        // Phát tên, mô tả và thời lượng dịch vụ, Action nhận phương thức void có ba tham số string.
         public event System.Action<string, string, string>? ServiceSelected;
+        // Các Brush quy định màu nền, viền và chấm tròn của thẻ dịch vụ theo trạng thái chọn.
         private readonly Brush _normalBackground =
             new SolidColorBrush(Color.FromRgb(131, 184, 222));
 
@@ -19,12 +21,14 @@ namespace Animal_Spa.Components.Receptionist
         private readonly Brush _selectedRadio =
             new SolidColorBrush(Color.FromRgb(78, 166, 232));
 
+        // Khởi tạo giao diện và đưa các thẻ dịch vụ về trạng thái ban đầu.
         public ServiceView()
         {
             InitializeComponent();
             ResetServiceCards();
         }
 
+        // Hiển thị tên danh mục, tải ba dịch vụ tương ứng và xóa trạng thái chọn trước đó.
         public void LoadCategory(string category)
         {
             CategoryNameText.Text = category;
@@ -100,6 +104,7 @@ namespace Animal_Spa.Components.Receptionist
             ResetServiceCards();
         }
 
+        // Gán tên, mô tả và thời lượng cho từng thẻ trong ba thẻ dịch vụ.
         private void SetServices(
             string name1,
             string description1,
@@ -124,6 +129,7 @@ namespace Animal_Spa.Components.Receptionist
             Service3Duration.Text = duration3;
         }
 
+        // Lấy chỉ số dịch vụ từ Tag, đánh dấu thẻ và phát thông tin qua ServiceSelected.
         private void ServiceCard_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button button &&
@@ -146,6 +152,7 @@ namespace Animal_Spa.Components.Receptionist
             }
         }
 
+        // Xóa đánh dấu cũ và chọn thẻ dịch vụ theo chỉ số từ 0 đến 2.
         private void SelectService(int index)
         {
             ResetServiceCards();
@@ -164,6 +171,7 @@ namespace Animal_Spa.Components.Receptionist
             }
         }
 
+        // Tô màu nền, viền và chấm tròn để biểu thị thẻ dịch vụ đang được chọn.
         private void SetSelected(Button card, System.Windows.Shapes.Ellipse radio)
         {
             card.BorderBrush = _selectedBorder;
@@ -171,6 +179,7 @@ namespace Animal_Spa.Components.Receptionist
             radio.Fill = _selectedRadio;
         }
 
+        // Khôi phục màu nền, viền và chấm tròn ban đầu cho tất cả thẻ dịch vụ.
         private void ResetServiceCards()
         {
             ServiceCard1.Background = _normalBackground;

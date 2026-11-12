@@ -12,6 +12,7 @@ namespace Animal_Spa.Components.Receptionist
 {
     public partial class AddCustomerView : UserControl
     {
+        // Event phát thông báo, action quy định chỉ phương thức void không tham số mới được đăng ký nhận thông báo
         public event Action? CancelRequested;
 
         private string? _selectedPhotoPath;
@@ -28,6 +29,7 @@ namespace Animal_Spa.Components.Receptionist
             LoadDefaultUploadFrame();
         }
 
+        // Tải ảnh mặc định
         private void LoadDefaultUploadFrame()
         {
             try
@@ -35,7 +37,7 @@ namespace Animal_Spa.Components.Receptionist
                 var uri = new Uri(
                     "pack://application:,,,/Animal-Spa;component/Asset/FRAME-UPLOAD.jpg",
                     UriKind.Absolute);
-
+                // BitmapImage đại diện cho kiểu hình ảnh lấy từ file/URI
                 var bitmap = new BitmapImage();
                 bitmap.BeginInit();
                 bitmap.UriSource = uri;
@@ -50,9 +52,10 @@ namespace Animal_Spa.Components.Receptionist
                 UploadFallback.Visibility = Visibility.Visible;
             }
         }
-
+        // Khi người dùng nhấp vào vùng ảnh, mở cửa sổ chọn ảnh từ máy tính.
         private void UploadPhotoArea_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
+            // Dialog tạo hộp thoại cho phép người dùng duyệt file từ máy tính.
             var dialog = new OpenFileDialog
             {
                 Title = "Choose customer photo",
@@ -77,7 +80,7 @@ namespace Animal_Spa.Components.Receptionist
                 StatusText.Text = $"Could not load image: {ex.Message}";
             }
         }
-
+        // Đọc file ảnh, tạo BitmapImage và đóng file sau khi đọc xong.
         private static BitmapImage LoadBitmapWithoutLockingFile(string path)
         {
             using var stream = File.OpenRead(path);
@@ -91,7 +94,7 @@ namespace Animal_Spa.Components.Receptionist
 
             return bitmap;
         }
-
+        // Hiển thị ảnh lên UploadRectangle bằng ImageBrush.
         private void SetUploadImage(ImageSource imageSource)
         {
             UploadRectangle.Fill = new ImageBrush(imageSource)
@@ -104,17 +107,18 @@ namespace Animal_Spa.Components.Receptionist
             UploadFallback.Visibility = Visibility.Collapsed;
         }
 
+        // Xử lí khi nhấn Save
         private void Save_Click(object sender, RoutedEventArgs e)
         {
             StatusText.Text = "UI ready — Save is not connected to customer creation yet.";
         }
-
+        // Xử lý khi nhấn Cancel: xóa form và phát sự kiện CancelRequested.
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             ClearForm();
             CancelRequested?.Invoke();
         }
-
+        // Xóa thông tin đã nhập, bỏ ảnh đã chọn và khôi phục trạng thái ban đầu.
         public void ClearForm()
         {
             CustomerNameTextBox.Clear();
