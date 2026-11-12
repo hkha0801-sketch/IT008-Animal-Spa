@@ -5,8 +5,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              FontFamily="{StaticResource Baloo2}">
+    <!-- Bỏ qua những thuộc tính hoặc thành phần thuộc nhóm d vì chúng chỉ phục vụ việc thiết kế giao diện -->
 
+    <!-- Khai báo các thuộc tính style dùng chung -->
     <UserControl.Resources>
+        <!-- Thuộc tính dùng chung cho các Button -->
         <Style x:Key="SmallActionButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="#FFFFFF"/>
             <Setter Property="Foreground" Value="#222222"/>
@@ -15,6 +18,7 @@
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
+                    <!-- ControlTemplate tự thiết kế lại giao diện của Button -->
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="ActionBorder"
                                 Background="{TemplateBinding Background}"
@@ -23,6 +27,7 @@
                             <ContentPresenter HorizontalAlignment="Center"
                                               VerticalAlignment="Center"/>
                         </Border>
+                        <!-- Trigger thay đổi thuộc tính khi có điều kiện được đáp ứng -->
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="ActionBorder" Property="Background" Value="#F2F7FB"/>
@@ -37,8 +42,10 @@
         </Style>
     </UserControl.Resources>
 
+    <!-- Viewbox phóng to hoặc thu nhỏ nội dung; Uniform giữ đúng tỷ lệ -->
     <Viewbox Stretch="Uniform">
         <Grid Width="1770" Height="900" Background="Transparent">
+            <!-- Canvas cho phép đặt đối tượng ở vị trí cụ thể -->
             <Canvas>
 
                 <TextBlock Canvas.Left="70"
@@ -104,6 +111,7 @@
                                        Foreground="#111111"
                                        Margin="0,0,0,10"/>
 
+                            <!-- StackPanel xếp đối tượng theo thứ tự -->
                             <StackPanel Grid.Row="2"
                                         Orientation="Horizontal"
                                         VerticalAlignment="Bottom">
@@ -140,6 +148,7 @@
                                         Cursor="Hand"
                                         Click="AddPet_Click">
                                     <Button.Template>
+                                        <!-- ControlTemplate tự thiết kế lại giao diện của Button -->
                                         <ControlTemplate TargetType="Button">
                                             <Border x:Name="AddPetBorder"
                                                     Background="{TemplateBinding Background}"
@@ -148,6 +157,7 @@
                                                                   VerticalAlignment="Center"
                                                                   Margin="0,-7,0,0"/>
                                             </Border>
+                                            <!-- Trigger thay đổi thuộc tính khi có điều kiện được đáp ứng -->
                                             <ControlTemplate.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
                                                     <Setter TargetName="AddPetBorder" Property="Background" Value="#C8D0D6"/>
@@ -310,6 +320,7 @@
                                 Cursor="Hand"
                                 Click="AddPet_Click">
                             <Button.Template>
+                                <!-- ControlTemplate tự thiết kế lại giao diện của Button -->
                                 <ControlTemplate TargetType="Button">
                                     <Border x:Name="AddCardBorder"
                                             Background="{TemplateBinding Background}"
@@ -322,6 +333,7 @@
                                                    VerticalAlignment="Center"
                                                    Margin="0,-15,0,0"/>
                                     </Border>
+                                    <!-- Trigger thay đổi thuộc tính khi có điều kiện được đáp ứng -->
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
                                             <Setter TargetName="AddCardBorder" Property="Background" Value="#CBCBCB"/>

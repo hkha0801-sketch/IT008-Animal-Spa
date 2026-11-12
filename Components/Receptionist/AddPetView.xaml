@@ -5,8 +5,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              FontFamily="{StaticResource Baloo2}">
+             <!-- Bỏ qua những thuộc tính hoặc thành phần thuộc nhóm d vì chúng chỉ phục vụ việc thiết kế giao diện -->
 
+    <!-- Khai báo các thuộc tính style dùng chung -->
     <UserControl.Resources>
+        <!-- Thuộc tính dùng chung cho các TextBlock -->
         <Style x:Key="FieldLabelStyle" TargetType="TextBlock">
             <Setter Property="FontSize" Value="28"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
@@ -14,6 +17,7 @@
             <Setter Property="Margin" Value="0,0,0,7"/>
         </Style>
 
+        <!-- Thuộc tính dùng chung cho các Button -->
         <Style x:Key="ActionButtonStyle" TargetType="Button">
             <Setter Property="Height" Value="60"/>
             <Setter Property="BorderThickness" Value="0"/>
@@ -23,6 +27,7 @@
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
+                    <!-- ControlTemplate tự thiết kế lại giao diện của Button -->
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="ButtonBorder"
                                 Background="{TemplateBinding Background}"
@@ -30,6 +35,7 @@
                             <ContentPresenter HorizontalAlignment="Center"
                                               VerticalAlignment="Center"/>
                         </Border>
+                        <!-- Trigger thay đổi thuộc tính khi có điều kiện được đáp ứng -->
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.88"/>
@@ -43,6 +49,7 @@
             </Setter>
         </Style>
 
+        <!-- Thuộc tính dùng chung cho các RadioButton -->
         <Style x:Key="GenderRadioStyle" TargetType="RadioButton">
             <Setter Property="Height" Value="58"/>
             <Setter Property="Background" Value="#F7F7F7"/>
@@ -51,6 +58,7 @@
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
+                    <!-- ControlTemplate tự thiết kế lại giao diện của RadioButton -->
                     <ControlTemplate TargetType="RadioButton">
                         <Border Background="{TemplateBinding Background}"
                                 CornerRadius="12">
@@ -76,6 +84,7 @@
                                 </Grid>
                             </Grid>
                         </Border>
+                        <!-- Trigger thay đổi thuộc tính khi có điều kiện được đáp ứng -->
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsChecked" Value="True">
                                 <Setter TargetName="CheckedDot" Property="Visibility" Value="Visible"/>
@@ -90,8 +99,10 @@
         </Style>
     </UserControl.Resources>
 
+    <!-- Viewbox phóng to hoặc thu nhỏ nội dung; Uniform giữ đúng tỷ lệ -->
     <Viewbox Stretch="Uniform">
         <Grid Width="1770" Height="840" Background="Transparent">
+            <!-- Canvas cho phép đặt đối tượng ở vị trí cụ thể -->
             <Canvas>
 
                 <TextBlock Canvas.Left="70"
@@ -130,6 +141,7 @@
                             <ColumnDefinition Width="500"/>
                         </Grid.ColumnDefinitions>
 
+                        <!-- StackPanel xếp đối tượng theo thứ tự -->
                         <StackPanel Grid.Column="0">
                             <TextBlock Text="Pet Name*"
                                        Style="{StaticResource FieldLabelStyle}"/>

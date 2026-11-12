@@ -5,8 +5,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              FontFamily="{StaticResource Baloo2}">
+    <!-- Bỏ qua những thuộc tính hoặc thành phần thuộc nhóm d vì chúng chỉ phục vụ việc thiết kế giao diện -->
 
+    <!-- Khai báo các thuộc tính style dùng chung -->
     <UserControl.Resources>
+        <!-- Thuộc tính dùng chung cho các Button -->
         <Style x:Key="RoundedButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="#4EA6E8"/>
             <Setter Property="Foreground" Value="White"/>
@@ -15,6 +18,7 @@
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
+                    <!-- ControlTemplate tự thiết kế lại giao diện của Button -->
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="ButtonBorder"
                                 Background="{TemplateBinding Background}"
@@ -23,6 +27,7 @@
                             <ContentPresenter HorizontalAlignment="Center"
                                               VerticalAlignment="Center"/>
                         </Border>
+                        <!-- Trigger thay đổi thuộc tính khi có điều kiện được đáp ứng -->
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.88"/>
@@ -37,12 +42,14 @@
         </Style>
     </UserControl.Resources>
 
+    <!-- Viewbox phóng to hoặc thu nhỏ nội dung; Uniform giữ đúng tỷ lệ -->
     <Viewbox Stretch="Uniform">
         <Grid Width="1770" Height="1012" ClipToBounds="True">
 
             <Image Source="/Animal-Spa;component/Asset/BACKGROUND-COSTUMER LIST.jpg"
                    Stretch="Fill"/>
 
+            <!-- Canvas cho phép đặt đối tượng ở vị trí cụ thể -->
             <Canvas>
 
                 <Border Canvas.Left="55"
@@ -77,6 +84,7 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
+                            <!-- StackPanel xếp đối tượng theo thứ tự -->
                             <StackPanel VerticalAlignment="Center"
                                         Margin="25,0,0,0">
                                 <TextBlock Text="KHA BÙI"
@@ -235,6 +243,7 @@
                                                 Cursor="Hand"
                                                 Click="ViewDetail_Click">
                                                 <Button.Template>
+                                                    <!-- ControlTemplate tự thiết kế lại giao diện của Button -->
                                                     <ControlTemplate TargetType="Button">
                                                         <Border x:Name="DetailBorder"
                                                             Background="{TemplateBinding Background}"
@@ -242,6 +251,7 @@
                                                             <ContentPresenter HorizontalAlignment="Center"
                                                                           VerticalAlignment="Center"/>
                                                         </Border>
+                                                        <!-- Trigger thay đổi thuộc tính khi có điều kiện được đáp ứng -->
                                                         <ControlTemplate.Triggers>
                                                             <Trigger Property="IsMouseOver" Value="True">
                                                                 <Setter TargetName="DetailBorder" Property="Background" Value="#F0F7FC"/>

@@ -1,3 +1,6 @@
+using Animal_Spa.Services;
+using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 
@@ -18,6 +21,35 @@ namespace Animal_Spa
         public LoginViews()
         {
             InitializeComponent();
+        }
+
+        private async void LoginViews_Loaded(object sender, RoutedEventArgs e)
+        {
+            Loaded -= LoginViews_Loaded;
+
+            if (DesignerProperties.GetIsInDesignMode(this))
+            {
+                return;
+            }
+
+            await CheckConnectionAsync();
+        }
+
+        private async void RetryConnectionButton_Click(object sender, RoutedEventArgs e)
+        {
+            await CheckConnectionAsync();
+        }
+
+        private async Task CheckConnectionAsync()
+        {
+            RetryConnectionButton.IsEnabled = false;
+            ConnectionStatus.Text = "Checking server connection...";
+            ConnectionStatus.ToolTip = null;
+
+            var (success, message) = await new ApiClient().CheckHealthAsync();
+            ConnectionStatus.Text = success ? "Server connected" : "Server unavailable";
+            ConnectionStatus.ToolTip = $"{ApiClient.BaseUrl}health\n{message}";
+            RetryConnectionButton.IsEnabled = true;
         }
 
         private void UserButton_Click(object sender, RoutedEventArgs e)

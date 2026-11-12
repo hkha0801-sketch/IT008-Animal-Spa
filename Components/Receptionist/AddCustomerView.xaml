@@ -5,15 +5,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              FontFamily="{StaticResource Baloo2}">
-
+             <!-- Bỏ qua những thuộc tính hoặc thành phần thuộc nhóm d vì chúng chỉ phục vụ việc thiết kế giao diện -->
+    <!-- Khai báo các thuộc tính style dùng chung -->
     <UserControl.Resources>
+        <!-- Thuộc tính dùng chung cho các text block -->
         <Style x:Key="FieldLabelStyle" TargetType="TextBlock">
             <Setter Property="FontSize" Value="27"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Foreground" Value="#202020"/>
             <Setter Property="Margin" Value="0,0,0,6"/>
         </Style>
-
+        <!-- Thuộc tính dùng chung cho các button -->
         <Style x:Key="ActionButtonStyle" TargetType="Button">
             <Setter Property="Height" Value="58"/>
             <Setter Property="BorderThickness" Value="0"/>
@@ -21,6 +23,7 @@
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="Cursor" Value="Hand"/>
+            <!-- Control Template tự thiết kế lại giao diện nút bấm -->
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -30,6 +33,7 @@
                             <ContentPresenter HorizontalAlignment="Center"
                                               VerticalAlignment="Center"/>
                         </Border>
+                        <!-- Trigger thay đổi thuộc tính khi có điều kiện được đáp ứng -->
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.88"/>
@@ -43,11 +47,11 @@
             </Setter>
         </Style>
     </UserControl.Resources>
-
+<!-- Viewbox giúp phóng to hoặc thu nhỏ nội dung bên trong để phù hợp với không gian được cấp, uniform là thuộc tính giúp co giãn theo đúng tỷ lệ -->
     <Viewbox Stretch="Uniform">
         <Grid Width="1770" Height="840" Background="Transparent">
+            <!-- Canvas cho phép đặt đối tượng ở vị trí cụ thể -->
             <Canvas>
-
                 <TextBlock Canvas.Left="70"
                            Canvas.Top="18"
                            Text="ADD CUSTOMER"
@@ -81,11 +85,12 @@
                                        Fill="#F5F5F5"
                                        Stroke="#8EBBDD"
                                        StrokeThickness="3"/>
-
+                            <!-- StackPanel xếp đối tượng theo thứ tự -->
                             <StackPanel x:Name="UploadFallback"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         IsHitTestVisible="False">
+                                        <!-- StackPanel cha không tham gia vào việc tương tác của chuột-->
                                 <TextBlock Text="&#xE8B9;"
                                            FontFamily="Segoe MDL2 Assets"
                                            FontSize="78"
@@ -220,6 +225,7 @@
                                              AcceptsReturn="True"
                                              TextWrapping="Wrap"
                                              VerticalScrollBarVisibility="Auto"/>
+                                             <!-- AcceptReturn cho phép nhấn Enter để xuống dòng. -->
                                 </Border>
                             </StackPanel>
                         </Grid>

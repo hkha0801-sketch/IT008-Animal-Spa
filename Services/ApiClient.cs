@@ -6,24 +6,19 @@ namespace Animal_Spa.Services
 {
     public class ApiClient
     {
-        private readonly HttpClient _httpClient;
-
         public const string BaseUrl = "http://localhost:5052/";
 
-        public ApiClient()
+        private static readonly HttpClient HttpClient = new HttpClient
         {
-            _httpClient = new HttpClient
-            {
-                BaseAddress = new Uri(BaseUrl),
-                Timeout = TimeSpan.FromSeconds(10)
-            };
-        }
+            BaseAddress = new Uri(BaseUrl),
+            Timeout = TimeSpan.FromSeconds(10)
+        };
 
         public async Task<(bool Success, string Message)> CheckHealthAsync()
         {
             try
             {
-                var response = await _httpClient.GetAsync("health");
+                using var response = await HttpClient.GetAsync("health");
 
                 if (response.IsSuccessStatusCode)
                 {
