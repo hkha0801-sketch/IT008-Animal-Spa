@@ -4,89 +4,150 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:components="clr-namespace:Animal_Spa.Components.Receptionist"
-             mc:Ignorable="d"
-             d:DesignWidth="1400"
-             d:DesignHeight="900"
-             Background="White">
-
+             mc:Ignorable="d" d:DesignWidth="1440" d:DesignHeight="900"
+             Background="#F4F9FD" FontFamily="{StaticResource Baloo2}">
     <UserControl.Resources>
-        <Style x:Key="SectionDividerStyle" TargetType="Border">
-            <Setter Property="Width" Value="260"/>
-            <Setter Property="Height" Value="28"/>
-            <Setter Property="Background" Value="#83B7DF"/>
-            <Setter Property="CornerRadius" Value="14"/>
-            <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="Margin" Value="0,8,0,12"/>
+        <Style x:Key="SidebarButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="Margin" Value="13,3,13,3"/>
+            <Setter Property="Padding" Value="17,0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="#DAECF7"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value><ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="11" Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate></Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#438DD5"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="20,11"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button">
+                <Border Background="{TemplateBinding Background}" CornerRadius="9" Padding="{TemplateBinding Padding}">
+                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+            </ControlTemplate></Setter.Value></Setter>
         </Style>
     </UserControl.Resources>
-
-    <ScrollViewer x:Name="DashboardScrollViewer"
-                  VerticalScrollBarVisibility="Auto"
-                  HorizontalScrollBarVisibility="Disabled"
-                  Background="White">
-        <StackPanel Background="White">
-
-            <components:CustomerListView x:Name="CustomerList"
-                                         Margin="30,30,30,0"/>
-
-            <Border Style="{StaticResource SectionDividerStyle}"
-                    Visibility="{Binding ElementName=CustomerDetail, Path=Visibility}"/>
-
-            <components:CustomerDetailView x:Name="CustomerDetail"
-                                           Visibility="Collapsed"
-                                           Margin="30,0,30,0"/>
-
-            <Border Style="{StaticResource SectionDividerStyle}"
-                    Visibility="{Binding ElementName=AddCustomer, Path=Visibility}"/>
-
-            <components:AddCustomerView x:Name="AddCustomer"
-                                        Visibility="Collapsed"
-                                        Margin="30,0,30,0"/>
-
-            <Border Style="{StaticResource SectionDividerStyle}"
-                    Visibility="{Binding ElementName=AddPet, Path=Visibility}"/>
-
-            <components:AddPetView x:Name="AddPet"
-                                   Visibility="Collapsed"
-                                   Margin="30,0,30,0"/>
-
-            <Border Style="{StaticResource SectionDividerStyle}"/>
-
-            <components:CategoryView x:Name="Category"
-                                     Margin="30,0,30,0"
-                                     HorizontalAlignment="Stretch"/>
-
-            <Border Style="{StaticResource SectionDividerStyle}"
-                    Visibility="{Binding ElementName=Service, Path=Visibility}"/>
-
-            <components:ServiceView x:Name="Service"
-                                    Visibility="Collapsed"
-                                    Margin="30,0,30,0"
-                                    HorizontalAlignment="Stretch"/>
-
-            <Border Style="{StaticResource SectionDividerStyle}"
-                    Visibility="{Binding ElementName=ServiceDetail, Path=Visibility}"/>
-
-            <components:ServiceDetailView x:Name="ServiceDetail"
-                                          Visibility="Collapsed"
-                                          Margin="30,0,30,0"
-                                          HorizontalAlignment="Stretch"/>
-
-            <Border Style="{StaticResource SectionDividerStyle}"
-                    Visibility="{Binding ElementName=Booking, Path=Visibility}"/>
-
-            <components:BookingView x:Name="Booking"
-                                    Margin="30,0,30,0"
-                                    HorizontalAlignment="Stretch"/>
-
-            <Border Style="{StaticResource SectionDividerStyle}"
-                    Visibility="{Binding ElementName=RoomStaff, Path=Visibility}"/>
-
-            <components:RoomStaffView x:Name="RoomStaff"
-                                      Visibility="Collapsed"
-                                      Margin="30,0,30,24"
-                                      HorizontalAlignment="Stretch"/>
-
+    <Grid>
+        <Grid.ColumnDefinitions><ColumnDefinition Width="235"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+        <Grid Grid.Column="0" Background="#123D5A">
+            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+            <StackPanel Margin="24,28,10,24">
+                <TextBlock Text="🐾 Animal Spa" Foreground="White" FontSize="26" FontWeight="ExtraBold"/>
+                <TextBlock Text="Pet Care Management" Foreground="#A9D4EA" FontSize="13"/>
+            </StackPanel>
+            <Border Grid.Row="1" Margin="14,0,14,16" Background="#235676" CornerRadius="12" Padding="13,11">
+                <StackPanel><TextBlock Text="RECEPTIONIST" Foreground="#BAE1F8" FontSize="11" FontWeight="Bold"/>
+                    <TextBlock Text="Lễ tân" Foreground="White" FontSize="16" FontWeight="SemiBold"/>
+                </StackPanel>
+            </Border>
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <StackPanel><Button x:Name="HomeNavButton" Content="Tổng quan" Tag="home" Style="{StaticResource SidebarButtonStyle}" Click="Navigate_Click"/>
+<Button x:Name="CustomersNavButton" Content="Khách hàng" Tag="customers" Style="{StaticResource SidebarButtonStyle}" Click="Navigate_Click"/>
+<Button x:Name="PetsNavButton" Content="Thú cưng" Tag="pets" Style="{StaticResource SidebarButtonStyle}" Click="Navigate_Click"/>
+<Button x:Name="ServicesNavButton" Content="Danh mục &amp; dịch vụ" Tag="services" Style="{StaticResource SidebarButtonStyle}" Click="Navigate_Click"/>
+<Button x:Name="BookingsNavButton" Content="Booking" Tag="bookings" Style="{StaticResource SidebarButtonStyle}" Click="Navigate_Click"/>
+<Button x:Name="ResourcesNavButton" Content="Phòng &amp; nhân viên" Tag="resources" Style="{StaticResource SidebarButtonStyle}" Click="Navigate_Click"/>
+<Button x:Name="ReportsNavButton" Content="Báo cáo" Tag="reports" Style="{StaticResource SidebarButtonStyle}" Click="Navigate_Click"/></StackPanel>
+            </ScrollViewer>
+            <Button Grid.Row="3" Content="↩ Đăng xuất" Tag="logout" Style="{StaticResource SidebarButtonStyle}" Margin="13,18,13,20" Click="Logout_Click"/>
+        </Grid>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+            <Border Background="White" Padding="26,19" BorderBrush="#E0ECF5" BorderThickness="0,0,0,1">
+                <StackPanel>
+                    <TextBlock x:Name="PageTitle" Text="Tổng quan lễ tân" FontSize="27" FontWeight="Bold" Foreground="#143E5D"/>
+                    <TextBlock x:Name="PageDescription" Text="Chọn chức năng ở menu bên trái để bắt đầu." FontSize="14" Foreground="#698398" Margin="0,3,0,0" TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
+            <ScrollViewer x:Name="ContentScroll" Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <Grid Margin="25,25,25,34">
+<StackPanel x:Name="HomeSection" Visibility="Visible">
+<Border Background="White" BorderBrush="#D8E7F2" BorderThickness="1" CornerRadius="18" Padding="36" MinHeight="290" Margin="0,0,0,12">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="720">
+            <Border Width="62" Height="62" CornerRadius="18" Background="#E5F3FE" HorizontalAlignment="Center" Margin="0,8,0,16">
+                <TextBlock Text="✦" Foreground="#398DD0" FontSize="31" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <TextBlock Text="Tổng quan lễ tân" FontSize="25" FontWeight="Bold" Foreground="#123C59" TextAlignment="Center" TextWrapping="Wrap"/>
+            <TextBlock Text="Chưa có component tổng quan. Khu vực này tạm để trống, không hiển thị thống kê giả." FontSize="15" Foreground="#607A8E" TextAlignment="Center" TextWrapping="Wrap" Margin="0,9,0,0"/>
+            <TextBlock Text="Các mục Khách hàng, Dịch vụ và Booking ở menu trái có thể sử dụng." FontSize="14" Foreground="#53738B" TextAlignment="Center" TextWrapping="Wrap" Margin="0,9,0,0"/>
         </StackPanel>
-    </ScrollViewer>
+    </Border>
+                    </StackPanel>
+<StackPanel x:Name="CustomersSection" Visibility="Collapsed">
+<components:CustomerListView x:Name="CustomerList"/>
+<components:CustomerDetailView x:Name="CustomerDetail" Visibility="Collapsed"/>
+<components:AddCustomerView x:Name="AddCustomer" Visibility="Collapsed"/>
+<components:AddPetView x:Name="AddPet" Visibility="Collapsed"/>
+                    </StackPanel>
+<StackPanel x:Name="PetsSection" Visibility="Collapsed">
+<Border Background="White" BorderBrush="#D8E7F2" BorderThickness="1" CornerRadius="18" Padding="36" MinHeight="290" Margin="0,0,0,12">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="720">
+            <Border Width="62" Height="62" CornerRadius="18" Background="#E5F3FE" HorizontalAlignment="Center" Margin="0,8,0,16">
+                <TextBlock Text="✦" Foreground="#398DD0" FontSize="31" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <TextBlock Text="Quản lý thú cưng" FontSize="25" FontWeight="Bold" Foreground="#123C59" TextAlignment="Center" TextWrapping="Wrap"/>
+            <TextBlock Text="Chưa có component danh sách thú cưng riêng." FontSize="15" Foreground="#607A8E" TextAlignment="Center" TextWrapping="Wrap" Margin="0,9,0,0"/>
+            <TextBlock Text="Hiện tại có thể mở khách hàng → Chi tiết → Thêm thú cưng (form demo)." FontSize="14" Foreground="#53738B" TextAlignment="Center" TextWrapping="Wrap" Margin="0,9,0,0"/>
+            <Button Content="Mở danh sách khách hàng" Style="{StaticResource PrimaryButtonStyle}" HorizontalAlignment="Center" Margin="0,22,0,0" Click="OpenCustomers_Click"/>
+        </StackPanel>
+    </Border>
+                    </StackPanel>
+<StackPanel x:Name="ServicesSection" Visibility="Collapsed">
+<components:CategoryView x:Name="Category"/>
+<StackPanel x:Name="ServiceResults" Visibility="Collapsed">
+    <Button Content="← Danh mục dịch vụ" Style="{StaticResource PrimaryButtonStyle}" HorizontalAlignment="Left" Margin="0,0,0,12" Click="BackToCategories_Click"/>
+    <components:ServiceView x:Name="Service"/>
+</StackPanel>
+<StackPanel x:Name="ServiceDetails" Visibility="Collapsed">
+    <Button Content="← Danh sách dịch vụ" Style="{StaticResource PrimaryButtonStyle}" HorizontalAlignment="Left" Margin="0,0,0,12" Click="BackToServices_Click"/>
+    <components:ServiceDetailView x:Name="ServiceDetail"/>
+</StackPanel>
+                    </StackPanel>
+<StackPanel x:Name="BookingsSection" Visibility="Collapsed">
+<components:BookingView x:Name="Booking"/>
+<components:RoomStaffView x:Name="RoomStaff" Visibility="Collapsed"/>
+                    </StackPanel>
+<StackPanel x:Name="ResourcesSection" Visibility="Collapsed">
+<Border Background="White" BorderBrush="#D8E7F2" BorderThickness="1" CornerRadius="18" Padding="36" MinHeight="290" Margin="0,0,0,12">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="720">
+            <Border Width="62" Height="62" CornerRadius="18" Background="#E5F3FE" HorizontalAlignment="Center" Margin="0,8,0,16">
+                <TextBlock Text="✦" Foreground="#398DD0" FontSize="31" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <TextBlock Text="Phòng và nhân viên" FontSize="25" FontWeight="Bold" Foreground="#123C59" TextAlignment="Center" TextWrapping="Wrap"/>
+            <TextBlock Text="Không mở phân công trực tiếp khi chưa có booking." FontSize="15" Foreground="#607A8E" TextAlignment="Center" TextWrapping="Wrap" Margin="0,9,0,0"/>
+            <TextBlock Text="Vào Booking → Danh sách/Quản lý → chọn booking CONFIRMED → Phân công session." FontSize="14" Foreground="#53738B" TextAlignment="Center" TextWrapping="Wrap" Margin="0,9,0,0"/>
+            <Button Content="Đi đến quản lý booking" Style="{StaticResource PrimaryButtonStyle}" HorizontalAlignment="Center" Margin="0,22,0,0" Click="OpenBookingManagement_Click"/>
+        </StackPanel>
+    </Border>
+                    </StackPanel>
+<StackPanel x:Name="ReportsSection" Visibility="Collapsed">
+<Border Background="White" BorderBrush="#D8E7F2" BorderThickness="1" CornerRadius="18" Padding="36" MinHeight="290" Margin="0,0,0,12">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="720">
+            <Border Width="62" Height="62" CornerRadius="18" Background="#E5F3FE" HorizontalAlignment="Center" Margin="0,8,0,16">
+                <TextBlock Text="✦" Foreground="#398DD0" FontSize="31" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <TextBlock Text="Báo cáo" FontSize="25" FontWeight="Bold" Foreground="#123C59" TextAlignment="Center" TextWrapping="Wrap"/>
+            <TextBlock Text="Chưa có component báo cáo. Khu vực này tạm để trống." FontSize="15" Foreground="#607A8E" TextAlignment="Center" TextWrapping="Wrap" Margin="0,9,0,0"/>
+        </StackPanel>
+    </Border>
+                    </StackPanel>
+                </Grid>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
 </UserControl>

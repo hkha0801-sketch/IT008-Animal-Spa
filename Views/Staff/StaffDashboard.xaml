@@ -1,6 +1,125 @@
 <UserControl x:Class="Animal_Spa.Views.Staff.StaffDashboard"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             Background="White">
-    <Grid Background="White"/>
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:components="clr-namespace:Animal_Spa.Components.Receptionist"
+             mc:Ignorable="d" d:DesignWidth="1440" d:DesignHeight="900"
+             Background="#F4F9FD" FontFamily="{StaticResource Baloo2}">
+    <UserControl.Resources>
+        <Style x:Key="SidebarButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="Margin" Value="13,3,13,3"/>
+            <Setter Property="Padding" Value="17,0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="#DAECF7"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value><ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="11" Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate></Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#438DD5"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="20,11"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button">
+                <Border Background="{TemplateBinding Background}" CornerRadius="9" Padding="{TemplateBinding Padding}">
+                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+            </ControlTemplate></Setter.Value></Setter>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions><ColumnDefinition Width="235"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+        <Grid Grid.Column="0" Background="#123D5A">
+            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+            <StackPanel Margin="24,28,10,24">
+                <TextBlock Text="🐾 Animal Spa" Foreground="White" FontSize="26" FontWeight="ExtraBold"/>
+                <TextBlock Text="Pet Care Management" Foreground="#A9D4EA" FontSize="13"/>
+            </StackPanel>
+            <Border Grid.Row="1" Margin="14,0,14,16" Background="#235676" CornerRadius="12" Padding="13,11">
+                <StackPanel><TextBlock Text="STAFF" Foreground="#BAE1F8" FontSize="11" FontWeight="Bold"/>
+                    <TextBlock Text="Nhân viên" Foreground="White" FontSize="16" FontWeight="SemiBold"/>
+                </StackPanel>
+            </Border>
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <StackPanel><Button x:Name="HomeNavButton" Content="Tổng quan" Tag="home" Style="{StaticResource SidebarButtonStyle}" Click="Navigate_Click"/>
+<Button x:Name="SessionsNavButton" Content="Ca dịch vụ" Tag="sessions" Style="{StaticResource SidebarButtonStyle}" Click="Navigate_Click"/>
+<Button x:Name="ScheduleNavButton" Content="Lịch làm việc" Tag="schedule" Style="{StaticResource SidebarButtonStyle}" Click="Navigate_Click"/>
+<Button x:Name="StaffProfileNavButton" Content="Hồ sơ cá nhân" Tag="staffprofile" Style="{StaticResource SidebarButtonStyle}" Click="Navigate_Click"/></StackPanel>
+            </ScrollViewer>
+            <Button Grid.Row="3" Content="↩ Đăng xuất" Tag="logout" Style="{StaticResource SidebarButtonStyle}" Margin="13,18,13,20" Click="Logout_Click"/>
+        </Grid>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+            <Border Background="White" Padding="26,19" BorderBrush="#E0ECF5" BorderThickness="0,0,0,1">
+                <StackPanel>
+                    <TextBlock x:Name="PageTitle" Text="Tổng quan nhân viên" FontSize="27" FontWeight="Bold" Foreground="#143E5D"/>
+                    <TextBlock x:Name="PageDescription" Text="Các chức năng Staff chưa được triển khai; hiện chưa có dữ liệu và thao tác giả." FontSize="14" Foreground="#698398" Margin="0,3,0,0" TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
+            <ScrollViewer x:Name="ContentScroll" Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <Grid Margin="25,25,25,34">
+<StackPanel x:Name="HomeSection" Visibility="Visible">
+<Border Background="White" BorderBrush="#D8E7F2" BorderThickness="1" CornerRadius="18" Padding="36" MinHeight="290" Margin="0,0,0,12">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="720">
+            <Border Width="62" Height="62" CornerRadius="18" Background="#E5F3FE" HorizontalAlignment="Center" Margin="0,8,0,16">
+                <TextBlock Text="✦" Foreground="#398DD0" FontSize="31" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <TextBlock Text="Tổng quan nhân viên" FontSize="25" FontWeight="Bold" Foreground="#123C59" TextAlignment="Center" TextWrapping="Wrap"/>
+            <TextBlock Text="Chưa có component tổng quan cho Staff. Khu vực này tạm để trống." FontSize="15" Foreground="#607A8E" TextAlignment="Center" TextWrapping="Wrap" Margin="0,9,0,0"/>
+        </StackPanel>
+    </Border>
+                    </StackPanel>
+<StackPanel x:Name="SessionsSection" Visibility="Collapsed">
+<Border Background="White" BorderBrush="#D8E7F2" BorderThickness="1" CornerRadius="18" Padding="36" MinHeight="290" Margin="0,0,0,12">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="720">
+            <Border Width="62" Height="62" CornerRadius="18" Background="#E5F3FE" HorizontalAlignment="Center" Margin="0,8,0,16">
+                <TextBlock Text="✦" Foreground="#398DD0" FontSize="31" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <TextBlock Text="Ca dịch vụ được phân công" FontSize="25" FontWeight="Bold" Foreground="#123C59" TextAlignment="Center" TextWrapping="Wrap"/>
+            <TextBlock Text="Chưa có component xem, bắt đầu hoặc hoàn tất service session cho Staff." FontSize="15" Foreground="#607A8E" TextAlignment="Center" TextWrapping="Wrap" Margin="0,9,0,0"/>
+            <TextBlock Text="Không dùng màn hình phân công của Receptionist tại đây." FontSize="14" Foreground="#53738B" TextAlignment="Center" TextWrapping="Wrap" Margin="0,9,0,0"/>
+        </StackPanel>
+    </Border>
+                    </StackPanel>
+<StackPanel x:Name="ScheduleSection" Visibility="Collapsed">
+<Border Background="White" BorderBrush="#D8E7F2" BorderThickness="1" CornerRadius="18" Padding="36" MinHeight="290" Margin="0,0,0,12">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="720">
+            <Border Width="62" Height="62" CornerRadius="18" Background="#E5F3FE" HorizontalAlignment="Center" Margin="0,8,0,16">
+                <TextBlock Text="✦" Foreground="#398DD0" FontSize="31" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <TextBlock Text="Lịch làm việc" FontSize="25" FontWeight="Bold" Foreground="#123C59" TextAlignment="Center" TextWrapping="Wrap"/>
+            <TextBlock Text="Chưa có component lịch làm việc của nhân viên." FontSize="15" Foreground="#607A8E" TextAlignment="Center" TextWrapping="Wrap" Margin="0,9,0,0"/>
+        </StackPanel>
+    </Border>
+                    </StackPanel>
+<StackPanel x:Name="StaffProfileSection" Visibility="Collapsed">
+<Border Background="White" BorderBrush="#D8E7F2" BorderThickness="1" CornerRadius="18" Padding="36" MinHeight="290" Margin="0,0,0,12">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="720">
+            <Border Width="62" Height="62" CornerRadius="18" Background="#E5F3FE" HorizontalAlignment="Center" Margin="0,8,0,16">
+                <TextBlock Text="✦" Foreground="#398DD0" FontSize="31" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <TextBlock Text="Hồ sơ nhân viên" FontSize="25" FontWeight="Bold" Foreground="#123C59" TextAlignment="Center" TextWrapping="Wrap"/>
+            <TextBlock Text="Chưa có component quản lý hồ sơ nhân viên." FontSize="15" Foreground="#607A8E" TextAlignment="Center" TextWrapping="Wrap" Margin="0,9,0,0"/>
+        </StackPanel>
+    </Border>
+                    </StackPanel>
+                </Grid>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
 </UserControl>

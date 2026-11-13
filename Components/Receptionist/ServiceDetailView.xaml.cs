@@ -49,6 +49,12 @@ namespace Animal_Spa.Components.Receptionist
             ResetSelection();
         }
 
+        // Chế độ Customer chỉ xem bảng giá; không được tạo booking qua chức năng Receptionist.
+        public void SetCustomerBrowseMode()
+        {
+            ChooseButton.Visibility = Visibility.Collapsed;
+        }
+
         // Hiển thị thông tin dịch vụ, áp dụng bảng giá và xóa lựa chọn trước đó.
         public void LoadService(string name, string description, string duration)
         {

@@ -450,7 +450,7 @@
                                 Style="{StaticResource ActionButtonStyle}"
                                 Margin="0,0,28,0"
                                 Click="Cancel_Click"/>
-                        <Button Content="Choose"
+                        <Button x:Name="ChooseButton" Content="Choose"
                                 Background="#4EA6E8"
                                 Style="{StaticResource ActionButtonStyle}"
                                 Click="Choose_Click"/>

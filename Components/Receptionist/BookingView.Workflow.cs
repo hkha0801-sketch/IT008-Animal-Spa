@@ -55,6 +55,10 @@ namespace Animal_Spa.Components.Receptionist
             return true;
         }
 
+        // Dashboard navigation: selection is still owned by the existing BookingView tabs.
+        public void ShowCreateTab() => BookingTabs.SelectedIndex = 0;
+        public void ShowManagementTab() => BookingTabs.SelectedIndex = 1;
+
         public void ClearSchedule()
         {
             PetNameInput.Clear();

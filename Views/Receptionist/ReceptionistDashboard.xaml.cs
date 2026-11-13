@@ -1,122 +1,206 @@
 using System;
 using System.ComponentModel;
+using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Threading;
-using System.Linq;
 using Animal_Spa.Models;
 using Animal_Spa.Services;
 
 namespace Animal_Spa.Views.Receptionist
 {
+    /// <summary>
+    /// Shell dành cho lễ tân: dùng lại các component có thật và không hiển thị
+    /// RoomStaffView nếu chưa được gọi từ một booking cụ thể.
+    /// </summary>
     public partial class ReceptionistDashboard : UserControl
     {
         private long? _activeBookingId;
+        private const string DefaultHeader = "Chọn chức năng ở menu bên trái để bắt đầu.";
+        private static readonly Brush ActiveBackground = new SolidColorBrush(Color.FromRgb(64, 151, 211));
+        private static readonly Brush NormalBackground = Brushes.Transparent;
+
         public ReceptionistDashboard()
         {
             InitializeComponent();
-
-            if (DesignerProperties.GetIsInDesignMode(this))
-            {
-                return;
-            }
+            if (DesignerProperties.GetIsInDesignMode(this)) return;
 
             CustomerList.ViewDetailRequested += ShowCustomerDetail;
             CustomerList.AddCustomerRequested += ShowAddCustomer;
-
             AddCustomer.CancelRequested += HideAddCustomer;
             CustomerDetail.AddPetRequested += ShowAddPet;
             AddPet.CancelRequested += HideAddPet;
+
             Category.CategorySelected += ShowServiceCategory;
             Service.ServiceSelected += ShowServiceDetail;
             ServiceDetail.ServiceChosen += AddServiceToBooking;
             ServiceDetail.CloseRequested += HideServiceDetail;
+
             Booking.SaveRequested += CreateBookingFromCart;
             Booking.AssignSessionRequested += ShowRoomStaff;
             RoomStaff.CancelRequested += ReturnToBooking;
             RoomStaff.Confirmed += FinishSession;
+            Navigate("home");
+        }
 
+        private void Navigate_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button { Tag: string page }) return;
+            // Clicking a main menu item should open its first screen, not a hidden child view.
+            switch (page)
+            {
+                case "customers": OpenCustomers_Click(sender, e); break;
+                case "services": BackToCategories_Click(sender, e); break;
+                case "bookings" when RoomStaff.Visibility == Visibility.Visible:
+                    ReturnToBooking(); break;
+                default: Navigate(page); break;
+            }
+        }
+
+        private void Navigate(string page)
+        {
+            HomeSection.Visibility = Visibility.Collapsed;
+            CustomersSection.Visibility = Visibility.Collapsed;
+            PetsSection.Visibility = Visibility.Collapsed;
+            ServicesSection.Visibility = Visibility.Collapsed;
+            BookingsSection.Visibility = Visibility.Collapsed;
+            ResourcesSection.Visibility = Visibility.Collapsed;
+            ReportsSection.Visibility = Visibility.Collapsed;
+
+            (StackPanel section, Button nav, string title, string description) target = page switch
+            {
+                "customers" => (CustomersSection, CustomersNavButton, "Khách hàng", "Danh sách, chi tiết, thêm khách hàng và thú cưng (dữ liệu mẫu)."),
+                "pets" => (PetsSection, PetsNavButton, "Thú cưng", "Chưa có danh sách thú cưng độc lập."),
+                "services" => (ServicesSection, ServicesNavButton, "Danh mục và dịch vụ", "Chọn danh mục → xem dịch vụ → xem chi tiết."),
+                "bookings" => (BookingsSection, BookingsNavButton, "Booking & Service Session", "Tạo lịch hẹn, xác nhận/hủy booking và phân công ca dịch vụ."),
+                "resources" => (ResourcesSection, ResourcesNavButton, "Phòng & nhân viên", "Chỉ phân công khi đã chọn booking hợp lệ."),
+                "reports" => (ReportsSection, ReportsNavButton, "Báo cáo", "Chưa có component báo cáo."),
+                _ => (HomeSection, HomeNavButton, "Tổng quan lễ tân", DefaultHeader),
+            };
+
+            target.section.Visibility = Visibility.Visible;
+            PageTitle.Text = target.title;
+            PageDescription.Text = target.description;
+            foreach (Button b in new[] { HomeNavButton, CustomersNavButton, PetsNavButton,
+                       ServicesNavButton, BookingsNavButton, ResourcesNavButton, ReportsNavButton })
+            {
+                b.Background = b == target.nav ? ActiveBackground : NormalBackground;
+                b.Foreground = Brushes.White;
+            }
+            ScrollTop();
+        }
+
+        private void ScrollTop() => Dispatcher.BeginInvoke(
+            new Action(() => ContentScroll.ScrollToTop()), DispatcherPriority.Loaded);
+
+        private void Logout_Click(object sender, RoutedEventArgs e)
+        {
+            new LoginViews().Show();
+            Window.GetWindow(this)?.Close();
+        }
+
+        private void OpenCustomers_Click(object sender, RoutedEventArgs e)
+        {
+            CustomerList.Visibility = Visibility.Visible;
+            CustomerDetail.Visibility = Visibility.Collapsed;
+            AddCustomer.Visibility = Visibility.Collapsed;
+            AddPet.Visibility = Visibility.Collapsed;
+            Navigate("customers");
         }
 
         private void ShowAddCustomer()
         {
+            CustomerList.Visibility = Visibility.Collapsed;
             CustomerDetail.Visibility = Visibility.Collapsed;
             AddPet.Visibility = Visibility.Collapsed;
             AddCustomer.Visibility = Visibility.Visible;
-
-            Dispatcher.BeginInvoke(
-                new Action(() => AddCustomer.BringIntoView()),
-                DispatcherPriority.Loaded);
+            Navigate("customers");
         }
 
-        private void HideAddCustomer()
-        {
-            AddCustomer.Visibility = Visibility.Collapsed;
-
-            Dispatcher.BeginInvoke(
-                new Action(() => CustomerList.BringIntoView()),
-                DispatcherPriority.Loaded);
-        }
+        private void HideAddCustomer() => OpenCustomers_Click(this, new RoutedEventArgs());
 
         private void ShowCustomerDetail(int customerId)
         {
-            AddCustomer.Visibility = Visibility.Collapsed;
-            AddPet.Visibility = Visibility.Collapsed;
-
             CustomerDetail.LoadCustomer(customerId);
             Booking.SetCustomer(customerId, CustomerDetail.CurrentCustomerName);
+            CustomerList.Visibility = Visibility.Collapsed;
+            AddCustomer.Visibility = Visibility.Collapsed;
+            AddPet.Visibility = Visibility.Collapsed;
             CustomerDetail.Visibility = Visibility.Visible;
-
-            Dispatcher.BeginInvoke(
-                new Action(() => CustomerDetail.BringIntoView()),
-                DispatcherPriority.Loaded);
+            Navigate("customers");
         }
 
         private void ShowAddPet(int customerId)
         {
-            AddCustomer.Visibility = Visibility.Collapsed;
-            CustomerDetail.Visibility = Visibility.Visible;
-
             AddPet.PrepareForCustomer(customerId);
+            CustomerList.Visibility = Visibility.Collapsed;
+            CustomerDetail.Visibility = Visibility.Collapsed;
+            AddCustomer.Visibility = Visibility.Collapsed;
             AddPet.Visibility = Visibility.Visible;
-
-            Dispatcher.BeginInvoke(
-                new Action(() => AddPet.BringIntoView()),
-                DispatcherPriority.Loaded);
+            Navigate("customers");
         }
+
+        private void HideAddPet()
+        {
+            AddPet.Visibility = Visibility.Collapsed;
+            CustomerDetail.Visibility = Visibility.Visible;
+            Navigate("customers");
+        }
+
+        private void BackToCategories_Click(object sender, RoutedEventArgs e)
+        {
+            Category.Visibility = Visibility.Visible;
+            ServiceResults.Visibility = Visibility.Collapsed;
+            ServiceDetails.Visibility = Visibility.Collapsed;
+            Navigate("services");
+        }
+
+        private void BackToServices_Click(object sender, RoutedEventArgs e) => HideServiceDetail();
 
         private void ShowServiceCategory(string category)
         {
-            ServiceDetail.Visibility = Visibility.Collapsed;
             Service.LoadCategory(category);
-            Service.Visibility = Visibility.Visible;
-
-            Dispatcher.BeginInvoke(
-                new Action(() => Service.BringIntoView()),
-                DispatcherPriority.Loaded);
+            Category.Visibility = Visibility.Collapsed;
+            ServiceResults.Visibility = Visibility.Visible;
+            ServiceDetails.Visibility = Visibility.Collapsed;
+            Navigate("services");
         }
 
         private void ShowServiceDetail(string name, string description, string duration)
         {
             ServiceDetail.LoadService(name, description, duration);
-            ServiceDetail.Visibility = Visibility.Visible;
-
-            Dispatcher.BeginInvoke(
-                new Action(() => ServiceDetail.BringIntoView()),
-                DispatcherPriority.Loaded);
+            Category.Visibility = Visibility.Collapsed;
+            ServiceResults.Visibility = Visibility.Collapsed;
+            ServiceDetails.Visibility = Visibility.Visible;
+            Navigate("services");
         }
 
+        private void HideServiceDetail()
+        {
+            Category.Visibility = Visibility.Collapsed;
+            ServiceResults.Visibility = Visibility.Visible;
+            ServiceDetails.Visibility = Visibility.Collapsed;
+            Navigate("services");
+        }
 
-        private void AddServiceToBooking(Animal_Spa.Models.BookingServiceItem item)
+        private void AddServiceToBooking(BookingServiceItem item)
         {
             Booking.AddService(item);
-            ServiceDetail.Visibility = Visibility.Collapsed;
-
-            Dispatcher.BeginInvoke(
-                new Action(() => Booking.BringIntoView()),
-                DispatcherPriority.Loaded);
+            Booking.ShowCreateTab();
+            RoomStaff.Visibility = Visibility.Collapsed;
+            Booking.Visibility = Visibility.Visible;
+            Navigate("bookings");
         }
 
+        private void OpenBookingManagement_Click(object sender, RoutedEventArgs e)
+        {
+            Booking.Visibility = Visibility.Visible;
+            RoomStaff.Visibility = Visibility.Collapsed;
+            Booking.ShowManagementTab();
+            Navigate("bookings");
+        }
 
         private void CreateBookingFromCart()
         {
@@ -137,17 +221,15 @@ namespace Animal_Spa.Views.Receptionist
                     UnitPrice = item.PriceValue
                 }).ToList();
                 ReceptionistBooking created = BookingWorkflowStore.Current.AddBooking(
-                    Booking.SelectedCustomerId,
-                    Booking.SelectedCustomerName,
+                    Booking.SelectedCustomerId, Booking.SelectedCustomerName,
                     pet, start, services, note);
 
                 Booking.ClearBooking();
                 Booking.ClearSchedule();
-                // Booking is persisted as PENDING; RoomStaff asks for explicit confirmation.
                 ShowRoomStaff(created.Id);
             }
             catch (Exception ex) when (ex is BookingWorkflowException ||
-                ex is System.IO.IOException || ex is UnauthorizedAccessException)
+                ex is IOException || ex is UnauthorizedAccessException)
             {
                 MessageBox.Show(ex.Message, "Không thể tạo booking",
                     MessageBoxButton.OK, MessageBoxImage.Error);
@@ -158,14 +240,15 @@ namespace Animal_Spa.Views.Receptionist
         {
             try
             {
-                _activeBookingId = bookingId;
+                // Prepare first: a failure must not hide BookingView.
                 RoomStaff.PrepareBooking(bookingId);
+                _activeBookingId = bookingId;
                 Booking.Visibility = Visibility.Collapsed;
                 RoomStaff.Visibility = Visibility.Visible;
-                Dispatcher.BeginInvoke(new Action(() => RoomStaff.BringIntoView()), DispatcherPriority.Loaded);
+                Navigate("bookings");
             }
             catch (Exception ex) when (ex is BookingWorkflowException ||
-                ex is System.IO.IOException || ex is UnauthorizedAccessException)
+                ex is IOException || ex is UnauthorizedAccessException)
             {
                 MessageBox.Show(ex.Message, "Không mở được ROOM & STAFF",
                     MessageBoxButton.OK, MessageBoxImage.Error);
@@ -177,7 +260,8 @@ namespace Animal_Spa.Views.Receptionist
             RoomStaff.Visibility = Visibility.Collapsed;
             Booking.Visibility = Visibility.Visible;
             if (_activeBookingId.HasValue) Booking.ShowBooking(_activeBookingId.Value);
-            Dispatcher.BeginInvoke(new Action(() => Booking.BringIntoView()), DispatcherPriority.Loaded);
+            _activeBookingId = null;
+            Navigate("bookings");
         }
 
         private void FinishSession(long bookingId)
@@ -185,7 +269,8 @@ namespace Animal_Spa.Views.Receptionist
             RoomStaff.Visibility = Visibility.Collapsed;
             Booking.Visibility = Visibility.Visible;
             Booking.ShowBooking(bookingId);
-            Dispatcher.BeginInvoke(new Action(() => Booking.BringIntoView()), DispatcherPriority.Loaded);
+            _activeBookingId = null;
+            Navigate("bookings");
         }
 
         private static int ParseDuration(string text)
@@ -196,24 +281,6 @@ namespace Animal_Spa.Views.Receptionist
             if (!match.Success || !int.TryParse(match.Groups[1].Value, out int minutes) || minutes <= 0)
                 throw new BookingWorkflowException($"Thời lượng dịch vụ không hợp lệ: {text}");
             return minutes;
-        }
-
-        private void HideServiceDetail()
-        {
-            ServiceDetail.Visibility = Visibility.Collapsed;
-
-            Dispatcher.BeginInvoke(
-                new Action(() => Service.BringIntoView()),
-                DispatcherPriority.Loaded);
-        }
-
-        private void HideAddPet()
-        {
-            AddPet.Visibility = Visibility.Collapsed;
-
-            Dispatcher.BeginInvoke(
-                new Action(() => CustomerDetail.BringIntoView()),
-                DispatcherPriority.Loaded);
         }
     }
 }
