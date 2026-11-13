@@ -51,6 +51,9 @@ namespace Animal_Spa.Components.Receptionist
             // Tính lại số dịch vụ và tổng tiền mỗi khi danh sách thay đổi.
             BookingItems.CollectionChanged += (_, _) => UpdateBookingSummary();
             UpdateBookingSummary();
+            BookingDateInput.SelectedDate = DateTime.Today.AddDays(1);
+            _workflowReady = true;
+            RenderEmptyDetails();
         }
 
         // Chọn khách hàng theo mã và bổ sung vào ComboBox nếu chưa có trong danh sách.

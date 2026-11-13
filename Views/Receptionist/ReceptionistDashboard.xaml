@@ -72,7 +72,8 @@
                                           Margin="30,0,30,0"
                                           HorizontalAlignment="Stretch"/>
 
-            <Border Style="{StaticResource SectionDividerStyle}"/>
+            <Border Style="{StaticResource SectionDividerStyle}"
+                    Visibility="{Binding ElementName=Booking, Path=Visibility}"/>
 
             <components:BookingView x:Name="Booking"
                                     Margin="30,0,30,0"
@@ -83,7 +84,7 @@
 
             <components:RoomStaffView x:Name="RoomStaff"
                                       Visibility="Collapsed"
-                                      Margin="30,0,30,20"
+                                      Margin="30,0,30,24"
                                       HorizontalAlignment="Stretch"/>
 
         </StackPanel>

@@ -10,6 +10,7 @@
     <AssemblyName>Animal-Spa</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Tests\**\*.cs" />
     <Resource Include="Asset\**\*.png" />
     <Resource Include="Asset\**\*.jpg" />
     <Resource Include="Asset\font\*.ttf" />

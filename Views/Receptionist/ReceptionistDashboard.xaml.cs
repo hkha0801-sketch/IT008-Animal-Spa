@@ -3,11 +3,15 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using System.Linq;
+using Animal_Spa.Models;
+using Animal_Spa.Services;
 
 namespace Animal_Spa.Views.Receptionist
 {
     public partial class ReceptionistDashboard : UserControl
     {
+        private long? _activeBookingId;
         public ReceptionistDashboard()
         {
             InitializeComponent();
@@ -27,9 +31,11 @@ namespace Animal_Spa.Views.Receptionist
             Service.ServiceSelected += ShowServiceDetail;
             ServiceDetail.ServiceChosen += AddServiceToBooking;
             ServiceDetail.CloseRequested += HideServiceDetail;
-            Booking.SaveRequested += ShowRoomStaff;
-            RoomStaff.CancelRequested += HideRoomStaff;
-            RoomStaff.Confirmed += CompleteBooking;
+            Booking.SaveRequested += CreateBookingFromCart;
+            Booking.AssignSessionRequested += ShowRoomStaff;
+            RoomStaff.CancelRequested += ReturnToBooking;
+            RoomStaff.Confirmed += FinishSession;
+
         }
 
         private void ShowAddCustomer()
@@ -81,7 +87,6 @@ namespace Animal_Spa.Views.Receptionist
 
         private void ShowServiceCategory(string category)
         {
-            RoomStaff.Visibility = Visibility.Collapsed;
             ServiceDetail.Visibility = Visibility.Collapsed;
             Service.LoadCategory(category);
             Service.Visibility = Visibility.Visible;
@@ -93,7 +98,6 @@ namespace Animal_Spa.Views.Receptionist
 
         private void ShowServiceDetail(string name, string description, string duration)
         {
-            RoomStaff.Visibility = Visibility.Collapsed;
             ServiceDetail.LoadService(name, description, duration);
             ServiceDetail.Visibility = Visibility.Visible;
 
@@ -105,7 +109,6 @@ namespace Animal_Spa.Views.Receptionist
 
         private void AddServiceToBooking(Animal_Spa.Models.BookingServiceItem item)
         {
-            RoomStaff.Visibility = Visibility.Collapsed;
             Booking.AddService(item);
             ServiceDetail.Visibility = Visibility.Collapsed;
 
@@ -115,33 +118,84 @@ namespace Animal_Spa.Views.Receptionist
         }
 
 
-        private void ShowRoomStaff()
+        private void CreateBookingFromCart()
         {
-            RoomStaff.PrepareSelection();
-            RoomStaff.Visibility = Visibility.Visible;
+            if (Booking.BookingItems.Count == 0) return;
+            if (!Booking.TryGetSchedule(out string pet, out DateTimeOffset start,
+                    out string note, out string error))
+            {
+                MessageBox.Show(error, "Thông tin lịch hẹn chưa hợp lệ",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            try
+            {
+                var services = Booking.BookingItems.Select(item => new BookingLine
+                {
+                    ServiceName = item.ServiceName,
+                    DurationMinutes = ParseDuration(item.Duration),
+                    UnitPrice = item.PriceValue
+                }).ToList();
+                ReceptionistBooking created = BookingWorkflowStore.Current.AddBooking(
+                    Booking.SelectedCustomerId,
+                    Booking.SelectedCustomerName,
+                    pet, start, services, note);
 
-            Dispatcher.BeginInvoke(
-                new Action(() => RoomStaff.BringIntoView()),
-                DispatcherPriority.Loaded);
+                Booking.ClearBooking();
+                Booking.ClearSchedule();
+                // Booking is persisted as PENDING; RoomStaff asks for explicit confirmation.
+                ShowRoomStaff(created.Id);
+            }
+            catch (Exception ex) when (ex is BookingWorkflowException ||
+                ex is System.IO.IOException || ex is UnauthorizedAccessException)
+            {
+                MessageBox.Show(ex.Message, "Không thể tạo booking",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
-        private void HideRoomStaff()
+        private void ShowRoomStaff(long bookingId)
         {
-            RoomStaff.Visibility = Visibility.Collapsed;
-
-            Dispatcher.BeginInvoke(
-                new Action(() => Booking.BringIntoView()),
-                DispatcherPriority.Loaded);
+            try
+            {
+                _activeBookingId = bookingId;
+                RoomStaff.PrepareBooking(bookingId);
+                Booking.Visibility = Visibility.Collapsed;
+                RoomStaff.Visibility = Visibility.Visible;
+                Dispatcher.BeginInvoke(new Action(() => RoomStaff.BringIntoView()), DispatcherPriority.Loaded);
+            }
+            catch (Exception ex) when (ex is BookingWorkflowException ||
+                ex is System.IO.IOException || ex is UnauthorizedAccessException)
+            {
+                MessageBox.Show(ex.Message, "Không mở được ROOM & STAFF",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
-        private void CompleteBooking()
+        private void ReturnToBooking()
         {
             RoomStaff.Visibility = Visibility.Collapsed;
-            Booking.ClearBooking();
+            Booking.Visibility = Visibility.Visible;
+            if (_activeBookingId.HasValue) Booking.ShowBooking(_activeBookingId.Value);
+            Dispatcher.BeginInvoke(new Action(() => Booking.BringIntoView()), DispatcherPriority.Loaded);
+        }
 
-            Dispatcher.BeginInvoke(
-                new Action(() => Booking.BringIntoView()),
-                DispatcherPriority.Loaded);
+        private void FinishSession(long bookingId)
+        {
+            RoomStaff.Visibility = Visibility.Collapsed;
+            Booking.Visibility = Visibility.Visible;
+            Booking.ShowBooking(bookingId);
+            Dispatcher.BeginInvoke(new Action(() => Booking.BringIntoView()), DispatcherPriority.Loaded);
+        }
+
+        private static int ParseDuration(string text)
+        {
+            var match = System.Text.RegularExpressions.Regex.Match(
+                text ?? "", @"^\s*(\d+)\s*mins?\s*$",
+                System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            if (!match.Success || !int.TryParse(match.Groups[1].Value, out int minutes) || minutes <= 0)
+                throw new BookingWorkflowException($"Thời lượng dịch vụ không hợp lệ: {text}");
+            return minutes;
         }
 
         private void HideServiceDetail()
